@@ -4,7 +4,10 @@ module.exports = {
   description: "closes a ticket!",
   cooldown: 3,
   async execute(message) {
-    const ticketDoc = await ticketModel.findOne({ guild: message.guild.id });
+    const ticketDoc = await ticketModel.findOne({
+      guild: message.guild.id,
+      owner: message.author.id,
+    });
     const guildDoc = await guildModel.findOne({ Guild: message.guild.id });
     const e = message.member;
     const user = await message.guild.members.cache.get(e.id);

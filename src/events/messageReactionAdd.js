@@ -18,6 +18,7 @@ module.exports = async (client, reaction, user) => {
   });
   const ticketDoc = await ticketModel.findOne({
     guild: reaction.message.guild.id,
+    channelID: message.channel.id,
   });
 
   if (reaction.message.id === panelDoc.msg) {
