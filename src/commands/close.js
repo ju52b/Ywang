@@ -6,7 +6,7 @@ module.exports = {
   async execute(message) {
     const ticketDoc = await ticketModel.findOne({
       guild: message.guild.id,
-      owner: message.author.id,
+      channelID: message.channel.id,
     });
     const guildDoc = await guildModel.findOne({ Guild: message.guild.id });
     const e = message.member;
@@ -28,7 +28,7 @@ module.exports = {
         VIEW_CHANNEL: false,
       });
       const msg = await channel.send(
-        "React with 🔓 to re-open this ticket or with \n⛔ to Close the ticket!"
+        "React with 🔓 to re-open this ticket or with \n⛔ to Close the ticket \n 📰 to get a transcript !"
       );
       await msg.react("🔓");
       await msg.react("⛔");
