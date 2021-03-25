@@ -2,8 +2,9 @@ const createTicket = require("../util/ticket");
 const { panelModel, guildModel, ticketModel } = require("../data/export");
 const { MessageEmbed, MessageAttachment } = require("discord.js");
 const fetchAll = require("discord-fetch-all");
-const fs = require("fs");
-const { reactions } = require("discord-fetch-all");
+const PasteClient = require("pastebin-api").default;
+const config = require('../../config.json')
+const pclient = new PasteClient(config.paste);
 module.exports = async (client, reaction, user) => {
   const { message } = reaction;
   if (user.bot) return;
@@ -21,23 +22,29 @@ module.exports = async (client, reaction, user) => {
     channelID: message.channel.id,
   });
 
-  if (reaction.message.id === panelDoc.msg) {
+  if (reaction.message.id === panelDoc?.msg) {
     reaction.users.remove(user);
     createTicket(message, user, guildDoc);
   }
 
-  if (reaction.message.id === ticketDoc.msg && reaction.emoji.name === "🔒") {
+  if (reaction.message.id === ticketDoc?.msg && reaction.emoji.name === "🔒") {
     reaction.users.remove(user);
     message.channel.updateOverwrite(client.users.cache.get(ticketDoc.owner), {
       SEND_MESSAGES: false,
       VIEW_CHANNEL: false,
     });
-    const owner = await message.guild.members.cache.get(ticketDoc.owner);
-    owner.send("Your ticket has been closed!");
+    await client.emit(
+      "ticketLog",
+      "closed",
+      message.channel,
+      ticketDoc.owner,
+      message.guild.id
+    );
     const msg = await message.channel.send({
       embed: {
         color: "RED",
         description: "🔓 Reopen Ticket \n⛔ Close Ticket \n📰 Transcript!",
+        footer: "Ticket Bot | made by syd's cloud",
       },
     });
     await msg.react("🔓");
@@ -48,13 +55,20 @@ module.exports = async (client, reaction, user) => {
 
     await ticketDoc.save();
   } else if (
-    reaction.message.id === ticketDoc.msg &&
+    reaction.message.id === ticketDoc?.msg &&
     reaction.emoji.name === "🔓"
   ) {
-    message.channel.updateOverwrite(client.users.cache.get(ticketDoc.userID), {
+    message.channel.updateOverwrite(client.users.cache.get(ticketDoc.owner), {
       SEND_MESSAGES: true,
       VIEW_CHANNEL: true,
     });
+    await client.emit(
+      "ticketLog",
+      "re-opened",
+      message.channel,
+      ticketDoc.owner,
+      message.guild.id
+    );
 
     const msg = await message.channel.messages.fetch(ticketDoc.msg);
 
@@ -64,7 +78,6 @@ module.exports = async (client, reaction, user) => {
     );
     const owner = await message.guild.members.cache.get(ticketDoc.owner);
     const msg3 = await message.channel.send(e);
-    owner.send("Your ticket has been re-opened!");
     ticketDoc.msg = msg3.id;
     ticketDoc.ticketStatus = true;
 
@@ -78,13 +91,21 @@ module.exports = async (client, reaction, user) => {
       },
     });
   } else if (
-    reaction.message.id === ticketDoc.msg &&
+    reaction.message.id === ticketDoc?.msg &&
     reaction.emoji.name == "⛔"
   ) {
-    const owner = await message.guild.members.cache.get(ticketDoc.owner);
-    message.channel.delete();
-    owner.send("Your ticket has been deleted!");
-    await ticketDoc.deleteOne();
+    await client.emit(
+      "ticketLog",
+      "deleted",
+      message.channel,
+      ticketDoc.owner,
+      message.guild.id
+    );
+    
+    setTimeout(async () => {
+      message.channel.delete();
+      await ticketDoc.deleteOne()
+    }, 5 * 1000)
   } else if (
     reaction.message.id === ticketDoc.msg &&
     reaction.emoji.name == "📰"
@@ -98,13 +119,13 @@ module.exports = async (client, reaction, user) => {
           m.embeds.length ? m.embeds[0].description : m.content
         }`
     );
-
-    fs.writeFileSync("transcript.txt", content.join("\n"));
-
-    message.channel
-      .send(new MessageAttachment("transcript.txt", "transcript.txt"))
-      .then(async () => {
-        await fs.unlinkSync("transcript.txt");
-      });
+    const url = await pclient.createPaste({
+      code: content.join("\n"),
+      expireDate: "1W",
+      format: "javascript",
+      name: "transcript.js",
+      publicity: 1,
+    });
+    message.channel.send("Your transcript: " + url)
   }
 };

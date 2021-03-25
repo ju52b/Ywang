@@ -11,10 +11,9 @@ module.exports = {
 
     const ticketDoc = await ticketModel.findOne({
       guild: message.guild.id,
-      owner: message.author.id,
+      channelID: message.channel.id,
     });
-    if (message.channel.id !== ticketDoc.channelID)
-      return message.channel.send(`This channel isnt a ticket!`);
+    if (!ticketDoc) return message.channel.send(`This channel isnt a ticket!`);
     try {
       message.channel.updateOverwrite(member.user, {
         VIEW_CHANNEL: true,

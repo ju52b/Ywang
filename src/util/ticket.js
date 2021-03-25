@@ -1,7 +1,12 @@
 const { MessageEmbed } = require("discord.js");
 const { panelModel, ticketModel } = require("../data/export");
 
-module.exports = async (message, user, guildDoc) => {
+module.exports = async (
+  message,
+  user,
+  guildDoc,
+  reason = "Created via panel"
+) => {
   const ticketDoc = await ticketModel.findOne({
     guild: message.guild.id,
     owner: user.id,
@@ -15,8 +20,10 @@ module.exports = async (message, user, guildDoc) => {
   } else {
     guildDoc.tickets += 1;
     await guildDoc.save();
-    const ticketChannel = await message.guild.channels.create(
-      `ticket-${guildDoc.tickets}`,
+    let ticketChannel;
+    if(guildDoc?.role) {
+    ticketChannel = await message.guild.channels.create(
+      `ticket-${user.username}`,
       {
         permissionOverwrites: [
           {
@@ -31,9 +38,35 @@ module.exports = async (message, user, guildDoc) => {
             deny: ["VIEW_CHANNEL", "SEND_MESSAGES"],
             id: message.guild.id,
           },
+          {
+            allow: ["VIEW_CHANNEL", "SEND_MESSAGES"],
+            id: guildDoc.role
+          }
         ],
       }
     );
+    } else {
+      ticketChannel = await message.guild.channels.create(
+        `ticket-${user.username}`,
+        {
+          permissionOverwrites: [
+            {
+              allow: ["VIEW_CHANNEL", "SEND_MESSAGES"],
+              id: user.id,
+            },
+            {
+              allow: ["VIEW_CHANNEL", "SEND_MESSAGES"],
+              id: message.client.user.id,
+            },
+            {
+              deny: ["VIEW_CHANNEL", "SEND_MESSAGES"],
+              id: message.guild.id,
+            },
+          ],
+        }
+      );
+    }
+    ticketChannel.setTopic(`**Reason:** ${reason}`);
     const em = new MessageEmbed()
       .setTitle("Welcome to your ticket!")
       .setDescription(
@@ -47,8 +80,9 @@ module.exports = async (message, user, guildDoc) => {
       owner: user.id,
       channelID: ticketChannel.id,
       msg: msg.id,
+      reason: reason,
     });
     ticketDoc.save();
-    user.send(`Ticket created check ${ticketChannel}!`);
+    message.channel.send(`Ticket created! ${ticketChannel}`)
   }
 };

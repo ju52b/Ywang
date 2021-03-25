@@ -2,7 +2,7 @@ const { MessageEmbed } = require("discord.js");
 const { panelModel } = require("../data/export");
 module.exports = {
   name: "panel",
-  description: "Get the pannel!",
+  description: "Get the panel!",
   cooldown: 3,
   async execute(message) {
     const panel = await panelModel.findOne({
@@ -17,9 +17,8 @@ module.exports = {
     if (panel) {
       const e = new MessageEmbed()
         .setTitle(`Panel`)
-        .setDescription(
-          `This is the panel if u react here a ticket will open.`
-        );
+        .setDescription(`This is the panel if u react here a ticket will open.`)
+        .setFooter("Ticket Bot | made by syd's cloud");
       message.channel.send(e).then(async (msg) => {
         await panelModel.findOneAndUpdate({
           guild: message.guild.id,

@@ -1,7 +1,7 @@
 const { guildModel, ticketModel } = require("../data/export");
 module.exports = {
   name: "close",
-  description: "closes a ticket!",
+  description: "Close a ticket!",
   cooldown: 3,
   async execute(message) {
     const ticketDoc = await ticketModel.findOne({
@@ -19,10 +19,6 @@ module.exports = {
       const channel = await message.guild.channels.cache.get(
         ticketDoc.channelID
       );
-      if (message.channel.id !== channel.id)
-        return message.channel.send(
-          "Please only use this command in a ticket!"
-        );
       channel.updateOverwrite(message.client.users.cache.get(ticketDoc.owner), {
         SEND_MESSAGES: false,
         VIEW_CHANNEL: false,

@@ -2,7 +2,7 @@ const { MessageEmbed } = require("discord.js");
 
 module.exports = {
   name: "help",
-  description: "Just a simple help command",
+  description: "Get my commands!",
   cooldown: 10,
   async execute(message) {
     const embed = new MessageEmbed().setColor("BLUE");

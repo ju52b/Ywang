@@ -4,7 +4,7 @@ const fs = require("fs");
 const { MessageAttachment } = require("discord.js");
 module.exports = {
   name: "transcript",
-  description: "get a transcript of a ticket!",
+  description: "Get a transcript of a ticket!",
   cooldown: 3,
   async execute(message) {
     const ticketDoc = await ticketModel.findOne({ guild: message.guild.id });

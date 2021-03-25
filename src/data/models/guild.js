@@ -4,6 +4,8 @@ const guildModel = mongoose.model(
   new mongoose.Schema({
     Guild: String,
     tickets: { type: Number, default: 0 },
+    log: String,
+    role: String,
   })
 );
 module.exports = guildModel;

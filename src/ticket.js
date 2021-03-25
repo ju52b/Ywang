@@ -12,6 +12,7 @@ client.prefix = config.prefix;
 client.models = require("./data/export");
 client.cooldowns = new Collection();
 init();
+require("./util/finding")(client)
 const commandFiles = readdirSync("./src/commands");
 for (const file of commandFiles) {
   const command = require(`./commands/${file}`);
