@@ -7,6 +7,7 @@ const client = new Client({
 const { readdirSync } = require("fs");
 const { init } = require("./util/mongo");
 const config = require("../config.json");
+client.functions = require('./util/functions')
 client.commands = new Collection();
 client.prefix = config.prefix;
 client.models = require("./data/export");
@@ -26,3 +27,5 @@ for (const eventFile of eventFiles) {
 }
 
 client.login(config.token);
+process.on("uncaughtException", (error) => client.functions.sendErrorLog(client, error, "uncaughExeption"))
+process.on("uncaughtExceptionMonitor", (error) => client.functions.sendErrorLog(client, error, "uncaughExeptionMonitor"))
