@@ -4,8 +4,8 @@ module.exports = {
   name: "eval",
   description: "An eval command :)",
   category: "owner",
-  developersOnly: true,
-  async execute (message, args) {
+  developerOnly: true,
+  async execute(message, args) {
     const toEval = args.join(" ");
     if (!toEval) return message.channel.send("Please provide text");
 
@@ -18,10 +18,7 @@ module.exports = {
           .setTitle("Eval Command")
           .addField("**Input:**", `\`\`\`js\n${toEval}\`\`\``)
           .addField("**Output:**", ` \`\`\`js\n${evaluated}\`\`\``)
-          .addField(
-            "**Type:**",
-            ` \`\`\`js\n${(type)}\`\`\``
-          )
+          .addField("**Type:**", ` \`\`\`js\n${type}\`\`\``)
           .setColor("BLUE")
           .setTimestamp()
           .setFooter(message.author.username);
