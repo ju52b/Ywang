@@ -1,9 +1,10 @@
 const { MessageEmbed } = require("discord.js"),
-  { guildModel } = require("../data/export");
+  { guildModel } = require("../../data/export");
 module.exports = {
   name: "ping",
   description: "Get my ping!",
   cooldown: 10,
+  category: "info",
   execute(message) {
     message.channel.send("Testing ping...").then(async (m) => {
       let randomColor = "RED";

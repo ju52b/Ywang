@@ -1,9 +1,10 @@
 const { MessageEmbed } = require("discord.js");
-const { panelModel } = require("../data/export");
+const { panelModel } = require("../../data/export");
 module.exports = {
   name: "panel",
   description: "Get the panel!",
   cooldown: 3,
+  category: "tickets",
   async execute(message) {
     const panel = await panelModel.findOne({
       guild: message.guild.id,

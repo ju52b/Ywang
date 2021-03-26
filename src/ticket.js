@@ -5,20 +5,23 @@ const client = new Client({
   messageCacheMaxSize: 5000,
 });
 const { readdirSync } = require("fs");
+const glob = require('glob')
+const path = require('path')
 const { init } = require("./util/mongo");
 const config = require("../config.json");
 client.functions = require('./util/functions')
 client.commands = new Collection();
 client.prefix = config.prefix;
+client.config = config
 client.models = require("./data/export");
 client.cooldowns = new Collection();
 init();
 require("./util/finding")(client)
-const commandFiles = readdirSync("./src/commands");
+const commandFiles = glob.sync('./src/commands/**/*.js');
 for (const file of commandFiles) {
-  const command = require(`./commands/${file}`);
+  const command = require(path.resolve(file));
   client.commands.set(command.name, command);
-}
+};
 const eventFiles = readdirSync("./src/events");
 for (const eventFile of eventFiles) {
   const event = require(`./events/${eventFile}`);

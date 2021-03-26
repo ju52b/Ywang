@@ -1,9 +1,10 @@
-const createTicket = require("../util/ticket");
-const { guildModel } = require("../data/export");
+const createTicket = require("../../util/ticket");
+const { guildModel } = require("../../data/export");
 module.exports = {
   name: "new",
   description: "Make a ticket channel!",
   cooldown: 3,
+  category: "tickets",
   async execute(message, args) {
     const guildDoc = await guildModel.findOne({ Guild: message.guild.id });
     const e = message.member;

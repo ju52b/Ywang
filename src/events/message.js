@@ -1,5 +1,4 @@
 const Discord = require("discord.js");
-const panel = require("../commands/panel");
 const { guildModel, ticketModel, panelModel } = require("../data/export");
 module.exports = async (client, message) => {
   const GEa = await guildModel.findOne({ Guild: message.guild.id });
@@ -67,6 +66,10 @@ module.exports = async (client, message) => {
 
   timestamps.set(message.author.id, now);
   setTimeout(() => timestamps.delete(message.author.id), cooldownAmount);
+  /** -----------------[OWNER CHECK]--------------------- */
+  if(command.developerOnly && !client.config.developers.includes(message.author.id)) {
+    return message.reply("Only developers can execute this command!")
+  }
   /**---------------------[COMMAND EXECUTING]---------------- */
   try {
     cmd.execute(message, args);

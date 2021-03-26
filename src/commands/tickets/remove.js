@@ -1,8 +1,9 @@
-const { ticketModel } = require("../data/export");
+const { ticketModel } = require("../../data/export");
 module.exports = {
-  name: "add",
-  description: "Add a user to a ticket ",
+  name: "remove",
+  description: "Remove an user from the ticket!",
   cooldown: 3,
+  category: "tickets",
   async execute(message, args) {
     const guild = message.guild;
     let member = guild.member(
@@ -16,9 +17,9 @@ module.exports = {
     if (!ticketDoc) return message.channel.send(`This channel isnt a ticket!`);
     try {
       message.channel.updateOverwrite(member.user, {
-        VIEW_CHANNEL: true,
-        SEND_MESSAGES: true,
-        READ_MESSAGE_HISTORY: true,
+        VIEW_CHANNEL: false,
+        SEND_MESSAGES: false,
+        READ_MESSAGE_HISTORY: false,
       });
     } catch (err) {
       message.channel.send(

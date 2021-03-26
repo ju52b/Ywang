@@ -7,8 +7,10 @@
     "discord-fetch-all": "^1.0.4",
     "discord.js": "^12.4.1",
     "fs": "^0.0.1-security",
-    "mongoose": "^5.10.11",
-    "pastebin-api": "^1.0.2"
+    "glob": "^7.1.6",
+    "mongoose": "^5.12.2",
+    "pastebin-api": "^1.0.2",
+    "path": "^0.12.7"
   },
   "devDependencies": {},
   "scripts": {

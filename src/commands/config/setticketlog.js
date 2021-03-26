@@ -1,7 +1,8 @@
-const { guildModel } = require("../data/export");
+const { guildModel } = require("../../data/export");
 module.exports = {
-  name: "setlog",
+  name: "setlogs",
   description: "Set's the ticket logs.",
+  category: "config",
   async execute(message, args) {
     if (!message.member.hasPermission("MANAGE_CHANNELS"))
       return message.reply("You don't have the right permissions for this!");

@@ -1,4 +1,4 @@
-const { guildModel, ticketModel } = require("../data/export");
+const { guildModel, ticketModel } = require("../../data/export");
 const fetchAll = require("discord-fetch-all");
 const fs = require("fs");
 const { MessageAttachment } = require("discord.js");
@@ -6,6 +6,7 @@ module.exports = {
   name: "transcript",
   description: "Get a transcript of a ticket!",
   cooldown: 3,
+  category: "tickets",
   async execute(message) {
     const ticketDoc = await ticketModel.findOne({ guild: message.guild.id });
     const guildDoc = await guildModel.findOne({ Guild: message.guild.id });

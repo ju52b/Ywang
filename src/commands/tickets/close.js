@@ -1,8 +1,9 @@
-const { guildModel, ticketModel } = require("../data/export");
+const { guildModel, ticketModel } = require("../../data/export");
 module.exports = {
   name: "close",
   description: "Close a ticket!",
   cooldown: 3,
+  category: "tickets",
   async execute(message) {
     const ticketDoc = await ticketModel.findOne({
       guild: message.guild.id,
