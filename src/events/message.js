@@ -67,8 +67,11 @@ module.exports = async (client, message) => {
   timestamps.set(message.author.id, now);
   setTimeout(() => timestamps.delete(message.author.id), cooldownAmount);
   /** -----------------[OWNER CHECK]--------------------- */
-  if(command.developerOnly && !client.config.developers.includes(message.author.id)) {
-    return message.reply("Only developers can execute this command!")
+  if (
+    cmd.developerOnly &&
+    !client.config.developers.includes(message.author.id)
+  ) {
+    return message.reply("Only developers can execute this command!");
   }
   /**---------------------[COMMAND EXECUTING]---------------- */
   try {
